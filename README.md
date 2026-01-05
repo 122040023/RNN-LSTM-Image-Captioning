@@ -1,28 +1,85 @@
 # RNN-LSTM-Image-Captioning
 
-This repository contains a **from-scratch implementation of an image captioning system** using **Vanilla RNNs, LSTMs, and Attention-based LSTMs** in PyTorch. The model generates natural language captions for images by combining a **CNN image encoder** with **recurrent sequence models**.
-
-The code is primarily designed for **educational and experimental purposes**, focusing on understanding how sequence models work internally rather than relying on high-level PyTorch abstractions.
+⚠️ **Coursework Assignment Notice**  
+This repository contains code developed **strictly as part of a university coursework assignment** on image captioning.  
+All implementations are intended **for educational purposes only** and are **not designed for production use**.
 
 ---
 
-## 📌 Overview
+## 📌 Project Overview
 
-The image captioning pipeline consists of:
+This coursework implements an **end-to-end image captioning system** using **Vanilla RNNs, LSTMs, and Attention-based LSTMs** in PyTorch. The primary goal of the assignment is to develop a deep, hands-on understanding of:
 
-1. **Image Encoder**
-   - A pretrained **RegNet-X 400MF** CNN extracts spatial image features.
-2. **Word Embedding Layer**
-   - Converts word indices into dense vector representations.
-3. **Sequence Model**
-   - One of:
-     - Vanilla RNN
-     - LSTM
-     - Attention-based LSTM
-4. **Output Projection**
-   - Maps hidden states to vocabulary scores.
-5. **Temporal Softmax Loss**
-   - Computes sequence-level cross-entropy loss during training.
+- Recurrent neural networks and sequence modeling  
+- Long Short-Term Memory (LSTM) architectures  
+- Attention mechanisms over spatial CNN features  
+- Training and inference pipelines for image captioning  
+
+To meet the learning objectives, most components are implemented **from scratch**, avoiding high-level PyTorch abstractions where possible.
+
+---
+
+## 🎓 Coursework Context
+
+This project corresponds to an **Image Captioning assignment** in a Deep Learning / Computer Vision course.  
+The assignment follows a **notebook-driven workflow** and emphasizes:
+
+- Manual implementation of RNN and LSTM forward passes  
+- Understanding backpropagation through time (BPTT)  
+- Integration of CNN encoders with sequence decoders  
+- Scaled dot-product attention  
+- Sequence-level loss computation with masking  
+
+---
+
+## 🗂 File Structure
+
+---
+
+## 📄 File Descriptions
+
+### `rnn_lstm_captioning.py`
+This file contains **all core implementations** required by the assignment :contentReference[oaicite:0]{index=0}, including:
+
+- **ImageEncoder**
+  - CNN-based encoder using pretrained RegNet-X 400MF
+  - Outputs spatial feature maps for attention models
+- **WordEmbedding**
+  - Custom word embedding layer
+- **Recurrent Models (from scratch)**
+  - Vanilla RNN
+  - LSTM
+  - Attention-based LSTM
+- **Attention Mechanism**
+  - Scaled dot-product attention over CNN feature grids
+- **CaptioningRNN**
+  - Unified image captioning model supporting:
+    - `cell_type="rnn"`
+    - `cell_type="lstm"`
+    - `cell_type="attn"`
+- **Temporal Softmax Loss**
+  - Sequence-level cross-entropy loss with `<NULL>` masking
+- **Inference / Sampling**
+  - Greedy decoding for caption generation
+
+This file focuses purely on **model logic and learning algorithms**, as required by the coursework.
+
+---
+
+### `rnn_lstm_captioning_main.py`
+This file is a **notebook-style execution script** adapted from Google Colab :contentReference[oaicite:1]{index=1}. It is responsible for:
+
+- Mounting Google Drive and setting up the runtime environment
+- Loading the preprocessed **COCO Captions dataset**
+- Running **sanity checks** for all implemented functions
+- Training RNN, LSTM, and Attention-based captioning models
+- Overfitting on small datasets for debugging
+- Performing full training runs
+- Sampling captions at test time
+- Visualizing attention maps for Attention LSTM
+- Saving final losses for submission
+
+This file **calls and evaluates** the functions and classes implemented in `rnn_lstm_captioning.py`.
 
 ---
 
@@ -31,54 +88,62 @@ The image captioning pipeline consists of:
 | Model Type | Description |
 |-----------|-------------|
 | `rnn` | Vanilla RNN with tanh activation |
-| `lstm` | Standard LSTM with input, forget, output, and gate cells |
-| `attn` | Attention-based LSTM with scaled dot-product attention over CNN features |
+| `lstm` | Standard LSTM with gating mechanisms |
+| `attn` | Attention-based LSTM with spatial attention |
 
 ---
 
+## 🚀 Training Pipeline
 
-All components are implemented inside a **single file** for clarity and grading convenience :contentReference[oaicite:0]{index=0}.
+During training (executed from `rnn_lstm_captioning_main.py`):
 
----
-
-## 🧩 Key Components
-
-### 1. ImageEncoder
-- Uses **RegNet-X 400MF** pretrained on ImageNet
-- Outputs spatial feature maps (`C × H × W`)
-- Normalizes inputs using ImageNet statistics
-
-### 2. Recurrent Modules (From Scratch)
-- `rnn_step_forward`, `rnn_step_backward`
-- `rnn_forward`, `rnn_backward`
-- Custom `RNN` class
-- Custom `LSTM` class
-- Custom `AttentionLSTM` class
-
-All recurrent logic is implemented **manually**, without using `torch.nn.RNN` or `torch.nn.LSTM`.
+1. Images are encoded using a CNN backbone  
+2. CNN features initialize hidden states  
+3. Input captions are embedded into word vectors  
+4. Sequence models process word embeddings  
+5. Vocabulary scores are produced at each timestep  
+6. Temporal softmax loss is computed (ignoring `<NULL>` tokens)  
 
 ---
 
-### 3. Attention Mechanism
-- Implements **scaled dot-product attention**
-- Computes alignment between:
-  - Previous hidden state
-  - Spatial CNN features
-- Produces attention weights over a `4 × 4` feature grid
+## 🎯 Inference & Sampling
+
+At test time:
+- Caption generation starts with the `<START>` token
+- Words are generated sequentially using greedy decoding
+- Generation runs for a fixed maximum length
+- Attention models return attention maps for visualization
 
 ---
 
-### 4. CaptioningRNN
-Main model class that:
-- Encodes images
-- Embeds words
-- Runs sequence model
-- Computes training loss
-- Generates captions at test time
+## 📦 Dependencies
 
-Supports:
-```python
-cell_type = "rnn" | "lstm" | "attn"
+- Python ≥ 3.8  
+- PyTorch  
+- Torchvision  
+- NumPy  
+- Matplotlib (for visualization)  
 
-## 🗂 File Structure
+---
+
+## ⚠️ Important Notes
+
+- This code prioritizes **clarity and correctness** over efficiency
+- No beam search or advanced decoding strategies are implemented
+- CNN backbone weights are fixed
+- Designed to meet **coursework learning objectives**, not benchmark performance
+
+---
+
+## 📜 Academic Integrity Notice
+
+This repository is provided **for learning and reference only**.  
+Reusing or submitting this code for another academic assignment **may violate academic integrity policies**.
+
+---
+
+## 📄 License
+
+This project is intended **solely for academic coursework and educational use**.
+
 
