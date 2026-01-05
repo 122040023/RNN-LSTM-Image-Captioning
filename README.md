@@ -32,8 +32,6 @@ The assignment follows a **notebook-driven workflow** and emphasizes:
 
 ---
 
----
-
 ## 📄 File Descriptions
 
 ### `rnn_lstm_captioning.py`
